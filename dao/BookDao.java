@@ -27,4 +27,23 @@ public class BookDao {
         
         return books;
     }
+    
+    public List<Book> getBookByTitle(String title) throws SQLException {
+        List<Book> books = new ArrayList<Book>();
+        
+        Connection con = JDBCConnection.getJDBCConection();
+        
+        String sql = "SELECT * FROM book_inf WHERE title like '%" + title + "%'";
+        
+        PreparedStatement preparedStatement = con.prepareStatement(sql);     
+        
+        ResultSet rs = preparedStatement.executeQuery();
+        
+        while(rs.next()) {
+            Book book = new Book(rs.getInt("id"), rs.getString("title"), rs.getDouble("price"));
+            books.add(book);
+        }
+        
+        return books;
+    }
 }

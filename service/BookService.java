@@ -16,4 +16,8 @@ public class BookService {
     public List<Book> getAllBook() throws SQLException {
         return bookDao.getAllBook();
     }
+    
+    public List<Book> getBookByTitle(String title) throws SQLException {
+        return bookDao.getBookByTitle(title);
+    }
 }
