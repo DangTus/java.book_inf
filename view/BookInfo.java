@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class BookInfo extends javax.swing.JFrame {
@@ -39,12 +40,8 @@ public class BookInfo extends javax.swing.JFrame {
     }
 
     final void addRowTB(List<Book> books) {
-        if (books.size() != 0) {
-            for (Book book : books) {
-                defaultTableModel.addRow(new Object[]{book.getId(), book.getTitle(), book.getPrice()});
-            }
-        } else {
-            defaultTableModel.addRow(new Object[]{"No book"});
+        for (Book book : books) {
+            defaultTableModel.addRow(new Object[]{book.getId(), book.getTitle(), book.getPrice()});
         }
     }
 
@@ -54,6 +51,17 @@ public class BookInfo extends javax.swing.JFrame {
             addRowTB(bookService.getBookByTitle(titleSearchTF.getText()));
         } catch (SQLException ex) {
             Logger.getLogger(BookInfo.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        testDeleteBT();
+    }
+
+    //ham nay dung de kiem tra xem ban co dang chon sach nao hay khong
+    public void testDeleteBT() {
+        int row = bookTB.getSelectedRow();
+        if (row != -1) {
+            deleteBT.setEnabled(true);
+        } else {
+            deleteBT.setEnabled(false);
         }
     }
 
@@ -81,7 +89,7 @@ public class BookInfo extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Book Information");
-        setLocation(new java.awt.Point(300, 200));
+        setLocation(new java.awt.Point(0, 0));
         setResizable(false);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Filter", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 15))); // NOI18N
@@ -160,6 +168,11 @@ public class BookInfo extends javax.swing.JFrame {
         deleteBT.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         deleteBT.setText("Delete");
         deleteBT.setEnabled(false);
+        deleteBT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteBTActionPerformed(evt);
+            }
+        });
         jPanel2.add(deleteBT);
 
         bookTB.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
@@ -226,10 +239,7 @@ public class BookInfo extends javax.swing.JFrame {
     }//GEN-LAST:event_exitBTActionPerformed
 
     private void bookTBMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bookTBMouseClicked
-        int row = bookTB.getSelectedRow();
-        if (row != -1) {
-            deleteBT.setEnabled(true);
-        }
+        testDeleteBT();
     }//GEN-LAST:event_bookTBMouseClicked
 
     private void searchBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBTActionPerformed
@@ -240,16 +250,37 @@ public class BookInfo extends javax.swing.JFrame {
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             search();
         }
-        
     }//GEN-LAST:event_titleSearchTFKeyPressed
 
     private void addBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBTActionPerformed
-        // TODO add your handling code here:
+        new BookAdd().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_addBTActionPerformed
 
     private void modifyBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyBTActionPerformed
-        // TODO add your handling code here:
+        try {
+            new BookEdit().setVisible(true);
+        } catch (SQLException ex) {
+            Logger.getLogger(BookInfo.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        this.dispose();
     }//GEN-LAST:event_modifyBTActionPerformed
+
+    private void deleteBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBTActionPerformed
+        int row = bookTB.getSelectedRow();
+        int id = Integer.parseInt(String.valueOf(bookTB.getValueAt(row, 0)));
+        int cf = JOptionPane.showConfirmDialog(this, "Ban co chac chan muon xoa khong?", "Ban chac chu?", JOptionPane.OK_OPTION);
+        if (cf == 0) {
+            try {
+                if (bookService.deleteBook(id) != 1) {
+                    JOptionPane.showMessageDialog(this, "Xoa khong thanh cong", "ERROR", JOptionPane.ERROR_MESSAGE);
+                }
+                search();
+            } catch (SQLException ex) {
+                Logger.getLogger(BookInfo.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_deleteBTActionPerformed
 
     /**
      * @param args the command line arguments

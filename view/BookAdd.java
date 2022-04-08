@@ -1,19 +1,20 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package book.view;
 
-/**
- *
- * @author DELL
- */
+import book.model.Book;
+import book.service.BookService;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 public class BookAdd extends javax.swing.JFrame {
 
-    /**
-     * Creates new form BookAdd
-     */
+    BookService bookService = null;
+
     public BookAdd() {
+        
+        bookService = new BookService();
+        
         initComponents();
     }
 
@@ -26,21 +27,127 @@ public class BookAdd extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
+        titleTF = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        priceSP = new javax.swing.JSpinner();
+        jPanel1 = new javax.swing.JPanel();
+        backBT = new javax.swing.JButton();
+        resetBT = new javax.swing.JButton();
+        saveBT = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Add Book");
+        setResizable(false);
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
+        jLabel1.setText("Title");
+
+        titleTF.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
+        jLabel2.setText("Price");
+
+        priceSP.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
+        priceSP.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, 1.0E9d, 10.0d));
+
+        jPanel1.setLayout(new java.awt.GridLayout(0, 3, 50, 0));
+
+        backBT.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
+        backBT.setText("Back");
+        backBT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backBTActionPerformed(evt);
+            }
+        });
+        jPanel1.add(backBT);
+
+        resetBT.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
+        resetBT.setText("Reset");
+        resetBT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetBTActionPerformed(evt);
+            }
+        });
+        jPanel1.add(resetBT);
+
+        saveBT.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
+        saveBT.setText("Save");
+        saveBT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveBTActionPerformed(evt);
+            }
+        });
+        jPanel1.add(saveBT);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 441, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(priceSP, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(titleTF, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 325, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(titleTF, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(priceSP, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void resetBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetBTActionPerformed
+        titleTF.setText("");
+        priceSP.setValue(0);
+    }//GEN-LAST:event_resetBTActionPerformed
+
+    private void saveBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBTActionPerformed
+        Book book = new Book();
+        book.setTitle(titleTF.getText());
+        book.setPrice((double) priceSP.getValue());
+        
+        try {
+            if(bookService.addBook(book) == 1) {
+                JOptionPane.showMessageDialog(this, "Them thanh cong", "Thong bao", JOptionPane.CLOSED_OPTION);
+            } else {
+                JOptionPane.showMessageDialog(this, "Them khong thanh cong", "Thong bao", JOptionPane.ERROR_MESSAGE);
+            }
+            new BookInfo().setVisible(true);
+            this.dispose();
+        } catch (SQLException ex) {
+            Logger.getLogger(BookAdd.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_saveBTActionPerformed
+
+    private void backBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBTActionPerformed
+        try {
+            new BookInfo().setVisible(true);
+        } catch (SQLException ex) {
+            Logger.getLogger(BookAdd.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        this.dispose();
+    }//GEN-LAST:event_backBTActionPerformed
 
     /**
      * @param args the command line arguments
@@ -72,11 +179,23 @@ public class BookAdd extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new BookAdd().setVisible(true);
+                try {
+                    new BookInfo().setVisible(true);
+                } catch (SQLException ex) {
+                    Logger.getLogger(BookAdd.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton backBT;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JSpinner priceSP;
+    private javax.swing.JButton resetBT;
+    private javax.swing.JButton saveBT;
+    private javax.swing.JTextField titleTF;
     // End of variables declaration//GEN-END:variables
 }
